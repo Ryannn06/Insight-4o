@@ -1,0 +1,57 @@
+[
+  {
+    "topic": "Monthly distribution of values across all countries",
+    "aggregation": "sum",
+    "measure": ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october"],
+    "group_by": null,
+    "filters": null,
+    "relationship": null,
+    "sort_by": null,
+    "ascending": null,
+    "limit": null
+  },
+  {
+    "topic": "Top 5 countries by total value",
+    "aggregation": "sum",
+    "measure": "total",
+    "group_by": "country",
+    "filters": null,
+    "relationship": null,
+    "sort_by": "total",
+    "ascending": false,
+    "limit": 5
+  },
+  {
+    "topic": "Correlation between total value and share",
+    "aggregation": null,
+    "measure": ["total", "share"],
+    "group_by": null,
+    "filters": null,
+    "relationship": "correlation",
+    "sort_by": null,
+    "ascending": null,
+    "limit": null
+  },
+  {
+    "topic": "Trend of total values over months",
+    "aggregation": "sum",
+    "measure": ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october"],
+    "group_by": null,
+    "filters": null,
+    "relationship": null,
+    "sort_by": ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october"],
+    "ascending": true,
+    "limit": null
+  },
+  {
+    "topic": "Countries with the highest share values",
+    "aggregation": "max",
+    "measure": "share",
+    "group_by": "country",
+    "filters": null,
+    "relationship": null,
+    "sort_by": "share",
+    "ascending": false,
+    "limit": 5
+  }
+]

@@ -1,0 +1,15 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="block-content">
+    <div class="row">
+        <div class="col-sm-12">
+            {% include "components/hero.html" %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

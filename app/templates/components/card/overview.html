@@ -1,0 +1,64 @@
+<div class="">
+    <div class="accordion border round" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    <span class="text-dark fw-bold">Overview</span>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <h6 class="fw-bold text-dark mb-1">Runtime</h6>
+                            <p class="text-muted">{{runtime}}s</p>
+                        </li>
+                        <li>
+                            <h6 class="fw-bold text-dark mb-1">Input</h6>
+                            <p class="text-secondary-dark">{% include "components/modal/preview_modal.html" %}</p>
+                        </li>
+                        <li>
+                            <h6 class="fw-bold text-dark mb-1">Tags</h6>
+                            <p>
+                                {% set seen = [] %}
+                                {% for res in openai_response %}
+                                {% if res.aggregation and res.aggregation not in seen %}
+                                <span class="badge bg-violet">{{ res.aggregation }}</span>
+                                {% set _ = seen.append(res.aggregation) %}
+                                {% elif res.relationship and res.relationship not in seen %}
+                                <span class="badge bg-violet">{{ res.relationship }}</span>
+                                {% set _ = seen.append(res.relationship) %}
+                                {% endif %}
+                                {% endfor %}
+                            </p>
+                        </li>
+                        <li>
+                            <h6 class="fw-bold text-dark mb-1">Charts</h6>
+                            <p class="text-muted">
+                                {% set seen = [] %}
+                                {% for res in openai_response %}
+                                {% if res.chart_type not in seen %}
+                                <span class="badge bg-violet">{{ res.chart_type }}</span>
+                                {% set _ = seen.append(res.chart_type) %}
+                                {% endif %}
+                                {% endfor %}
+                            </p>
+                        </li>
+                        <li class="">
+                            <h6 class="fw-bold text-dark mb-1">Table of Contents</h6>
+                            <ul class="list-unstyled mb-0 list-group-numbered">
+                                {% for res in openai_response %}
+                                <li class="text-muted text-capitalize mb-1 ms-3 ms-md-4 list-group-item">
+                                    <a href="#{{ res.topic | replace(' ', '-') }}">{{res.topic}}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

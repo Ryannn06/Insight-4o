@@ -1,0 +1,109 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}VizAI{% endblock %}</title>
+
+    <!-- Google Font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+
+    <!-- Optional custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+
+    <!-- Notyf-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Datatables-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+
+    <!-- Matrix (heatmap) -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.3.0"></script>
+
+    <!-- Boxplot plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.1.0"></script>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    {% set show_navbar = show_navbar | default(true) %}
+
+    <script src="https://www.gstatic.com/charts/loader.js">
+    </script>
+
+    <!-- Main content -->
+    <div class="container-fluid">
+      {% if show_navbar %} {% include "components/navbar.html" %} {% endif %} {%
+      block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Notyf JS-->
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <!-- Datatables JS-->
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.min.js"></script>
+
+    <script>
+        // Create an instance of Notyf
+      const notyf = new Notyf({
+        duration: 10000,
+        dismissable: true,
+        types: [
+          {
+            type: 'success',
+            background: '#6F42C1', // violet for success
+            icon: false
+          },
+          {
+            type: 'error',
+            background: '#DC3545', // red for error
+            icon: false
+          },
+          {
+            type: 'info',
+            background: '#212529', // dark for info
+            icon: false
+          }
+        ]
+      });
+
+      {% if error %}
+        notyf.error('{{ error }}')
+      {% elif success %}
+        notyf.success('{{ success }}')
+      {% endif %}
+    </script>
+  </body>
+</html>

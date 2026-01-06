@@ -1,0 +1,128 @@
+{% extends "base.html" %} {% block title %}Preview{% endblock %} {% set
+show_navbar = true %} {% block content %}
+<div class="block-content">
+    <div class="row py-3 gy-3 gx-5">
+        <div class="col-md-12">
+            <h6 class="text-muted"><i>Generated Report</i></h6>
+        </div>
+        <div class="col-md-4">
+            <div class="col-md-12">{% include "components/card/overview.html" %}</div>
+        </div>
+        <div class="col-md-8">
+            <div class="row gy-5">
+                {% include "components/card/reportcard.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script%}
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            paging: true,        // Enable pagination
+            searching: true,     // Enable search box
+            ordering: true,      // Enable column sorting
+            info: true,          // Show "Showing x of y entries"
+            lengthChange: true,
+            scrollX: true        // Allow changing number of rows shown
+        });
+    });
+</script>
+<script type="text/javascript">
+    // 1. Ensure both 'corechart' and 'table' packages are loaded
+    google.charts.load('current', { 'packages': ['corechart', 'table'] });
+    google.charts.setOnLoadCallback(drawAllCharts);
+
+    const datasets = {{ openai_response | tojson | safe }};
+
+    function drawAllCharts() {
+        datasets.forEach((item, index) => {
+            const container = document.getElementById('chart_' + index);
+            if (!container || !item.result || item.result.length === 0) return;
+
+            const resultRows = item.result;
+            const dataTable = new google.visualization.DataTable();
+
+            // 2. SMART COLUMN DETECTION
+            const allKeys = Object.keys(resultRows[0]);
+            let labelCol = "";
+            let valueCols = [];
+
+            allKeys.forEach(key => {
+                const sampleValue = resultRows[0][key];
+                if (typeof sampleValue === 'string' || isNaN(parseFloat(sampleValue))) {
+                    labelCol = key;
+                } else {
+                    valueCols.push(key);
+                }
+            });
+
+            if (!labelCol) labelCol = allKeys[0];
+
+            dataTable.addColumn('string', labelCol);
+            valueCols.forEach(col => dataTable.addColumn('number', col));
+
+            // 3. ADD ROWS
+            resultRows.forEach(row => {
+                const rowValues = [];
+                rowValues.push(String(row[labelCol]));
+                valueCols.forEach(col => {
+                    let val = parseFloat(row[col]);
+                    rowValues.push(isNaN(val) ? 0 : val);
+                });
+                dataTable.addRow(rowValues);
+            });
+
+            // 4. SEPARATE OPTIONS
+            const type = (item.chart_type || 'bar').toLowerCase();
+
+            if (type === 'table') {
+                // Table-specific options
+                const tableOptions = {
+                    showRowNumber: true,
+                    width: '100%',
+                    height: '100%',
+                    alternatingRowStyle: true
+                };
+                const chart = new google.visualization.Table(container);
+                chart.draw(dataTable, tableOptions);
+            } else {
+                // Core chart options (Bar, Line, Pie)
+                const coreOptions = {
+                    colors: ['#6F42C1', '#007BFF', '#28A745'],
+                    height: 250,
+                    width: '100%',
+                    chartArea: {
+                        left: '15%',
+                        right: '5%',
+                        top: 20,
+                        bottom: 60,
+                        width: '80%',
+                        height: '70%'
+                    },
+                    hAxis: { slantedText: true, slantedTextAngle: 45 },
+                    vAxis: { minValue: 0, format: 'short' },
+                    legend: { position: 'bottom' }
+                };
+
+                let chart;
+                if (type === 'line') {
+                    chart = new google.visualization.LineChart(container);
+                } else if (type === 'pie') {
+                    chart = new google.visualization.PieChart(container);
+                } else {
+                    chart = new google.visualization.ColumnChart(container);
+                }
+                chart.draw(dataTable, coreOptions);
+            }
+        });
+    }
+
+    window.addEventListener('resize', () => {
+        clearTimeout(window.resizer);
+        window.resizer = setTimeout(drawAllCharts, 250);
+    });
+</script>
+{% endblock %} {% endblock %}

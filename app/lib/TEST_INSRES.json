@@ -1,0 +1,18 @@
+[
+    {
+        "insight": "South Korea leads January by a wide margin, significantly outperforming all other countries. The United States ranks second, while the remaining countries show much lower totals, indicating a strong concentration in the top two.",
+        "chart_type": "bar"
+    },
+    {
+        "insight": "February shows a very similar pattern to January, with South Korea again dominating and the United States maintaining second place. Slight shifts among mid-ranked countries suggest minor month-to-month variation rather than a structural change.",
+        "chart_type": "bar"
+    },
+    {
+        "insight": "Several countries recorded a value of zero in March, indicating no recorded activity or contribution during that month. This suggests either data gaps or complete inactivity for these countries in March.",
+        "chart_type": "table"
+    },
+    {
+        "insight": "In April, South Korea and the United States remain the top contributors, though overall values appear lower compared to earlier months. Australia, China, and Japan form a competitive mid-tier with relatively close values.",
+        "chart_type": "bar"
+    }
+]

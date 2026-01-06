@@ -1,0 +1,25 @@
+<table id="myTable" class="table table-sm table-striped table-hover table-bordered nowrap">
+    <thead>
+        <tr>
+            {% for col in columns %}
+            <th class="text-capitalize text-dark">
+                {{ col }}
+                <br>
+                {# Access dtypes by the current loop index #}
+                <span class="badge bg-violet text-light fw-normal" style="font-size: 0.7rem;">
+                    {{ dtypes[loop.index0] }}
+                </span>
+            </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for col in columns %}
+            <td>{{ row[col] }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

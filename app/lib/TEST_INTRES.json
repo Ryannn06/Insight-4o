@@ -1,0 +1,57 @@
+[
+    {
+        "topic": "Top countries by total value in January",
+        "aggregation": "sum",
+        "measure": "january",
+        "group_by": "country",
+        "filters": null,
+        "relationship": null,
+        "sort_by": "january",
+        "ascending": false,
+        "limit": 5
+    },
+    {
+        "topic": "Top countries by total value in February",
+        "aggregation": "sum",
+        "measure": "february",
+        "group_by": "country",
+        "filters": null,
+        "relationship": null,
+        "sort_by": "february",
+        "ascending": false,
+        "limit": 5
+    },
+    {
+        "topic": "Countries with the lowest values in March",
+        "aggregation": "min",
+        "measure": "march",
+        "group_by": "country",
+        "filters": null,
+        "relationship": null,
+        "sort_by": "march",
+        "ascending": true,
+        "limit": 5
+    },
+    {
+        "topic": "Relationship between January and February values across countries",
+        "aggregation": null,
+        "measure": null,
+        "group_by": null,
+        "filters": null,
+        "relationship": "correlation",
+        "sort_by": null,
+        "ascending": null,
+        "limit": null
+    },
+    {
+        "topic": "Top countries by total value in April",
+        "aggregation": "max",
+        "measure": "april",
+        "group_by": "country",
+        "filters": null,
+        "relationship": null,
+        "sort_by": "april",
+        "ascending": false,
+        "limit": 5
+    }
+]

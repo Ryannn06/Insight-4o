@@ -1,0 +1,128 @@
+html {
+  font-size: 16px; /* default */
+}
+
+body, h1, h2, h3, h4, h5, h6, p, a, button, td, th {
+    font-family: 'Lato', sans-serif;
+}
+
+p {
+    font-size: 1rem !important;
+}
+
+.tiny-p {
+    font-size: 0.75rem !important;
+}
+
+.dataTables_wrapper table  {
+    font-size: 3rem !important;
+}
+
+.btn-custom {
+    font-size: 1rem; 
+    padding: 0.5rem 2rem;
+}
+
+.btn {
+    color:  #F8F9FA !important;
+    background-color: #6F42C1;
+    border-color:  #F8F9FA;
+}
+
+.btn:hover {
+    background-color:  #F8F9FA !important;
+    color: #6F42C1 !important;
+    border-color:  #6F42C1;
+}
+
+.index-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-custom-dark{
+    background-color:  #212121 !important;
+}
+
+.text-dark {
+    color:  #6F42C1 !important;
+}
+
+.bg-violet {
+    background-color: #6F42C1 !important;
+}
+
+.text-light {
+    color: #F8F9FA;
+}
+
+.text-secondary-light {
+    color: #757575 !important;
+}
+
+.text-secondary-dark {  
+    color: #212529 !important;
+}
+
+.text-dark-muted {
+    color: #6C757D !important;
+}
+
+.bg-custom-light {
+    background-color: #F8F9FA;
+}
+
+hr {
+    color: #F8F9FA;
+    height: 5px;
+}
+
+body {
+    background-color:  #F8F9FA;
+}
+
+.nav-block {
+    padding: 0.5rem 5rem 0.5rem 5rem
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.block-content {
+    padding: 2.5rem 5rem 2.5rem 5rem
+}
+
+.block-content-nav {
+    padding: .25rem 5rem .25rem 5rem
+}
+
+.violet-input {
+    border: 1px solid #6F42C1;
+}
+
+.violet-input:focus {
+    border-color: #6F42C1;
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}
+
+.hero-img {
+    max-width: 500px;
+    /* limits image width on large screens */
+    width: 70%;
+    /* responsive scaling */
+    height: auto;
+    /* maintain aspect ratio */
+}
+
+.thumb-img {
+    max-width: 50px;
+    /* limits image width on large screens */
+    width: 100%;
+    /* responsive scaling */
+    height: auto;
+    /* maintain aspect ratio */
+}
