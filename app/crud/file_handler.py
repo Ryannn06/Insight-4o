@@ -4,13 +4,11 @@ import uuid
 import pandas as pd
 from collections import Counter
 from io import StringIO, BytesIO
+from app.utils.config import TEMP_DICT
 
 import calendar
 
-
 ALLOWED_EXTENSIONS = [".csv", ".xls", ".xlsx"]
-
-TEMP_DICT = {}
 
 # Get list of month names
 full_months = list(calendar.month_name)[1:] # [January, February...]
@@ -78,7 +76,7 @@ def micro_clean(df : pd.DataFrame) -> pd.DataFrame:
             
             # If month name is provided but in object
             if df[col].str.title().isin(full_months + short_months).all():
-                month_col = to_month(df[col].str.title())
+                month_col = to_month(df[col].str.strip().str.title())
                 df[col] = month_col
                 continue
 
@@ -94,16 +92,14 @@ def micro_clean(df : pd.DataFrame) -> pd.DataFrame:
     return df
 
 def to_month(df_col):
-    if df_col.all() in full_months:
-        generated_month = pd.Categorical(df_col, categories=full_months, ordered=True)
-        return generated_month
+    if df_col.isin(full_months).any():
+        return pd.Categorical(df_col, categories=full_months, ordered=True)
 
-    if df_col.all() in short_months:
-        generated_month = pd.Categorical(df_col, categories=short_months, ordered=True)
-        return generated_month
+    if df_col.isin(short_months).any():
+        return pd.Categorical(df_col, categories=short_months, ordered=True)
 
     else:
-        return generated_month
+        return df_col
 
 def clear_dict(clean_id : str):
     try:

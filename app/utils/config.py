@@ -1,0 +1,5 @@
+TEMP_DICT = {}
+
+RES_DICT = {}
+
+DURATION = {}

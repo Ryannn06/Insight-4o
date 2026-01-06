@@ -2,7 +2,7 @@ import json, re
 import pandas as pd
 from openai import OpenAI
 
-from app.crud.env import BASE_URL, API_KEY
+from app.utils.env import BASE_URL, API_KEY
 
 # initialize OpenAI client
 client = OpenAI(base_url=BASE_URL, 
@@ -147,9 +147,7 @@ def combine_results(intents, insights) -> list:
 
 # analyze intent from OpenAI response
 def analyze_intent(df_original: pd.DataFrame, response : str) -> str:
-    
     result_list = []
-
     data = try_parse_json(response)
 
     for item in data:
@@ -260,6 +258,9 @@ def analyze_intent(df_original: pd.DataFrame, response : str) -> str:
         except Exception as e:
             print(f"Error processing topic '{item.get('topic')}': {e}")
             continue
+
+    if len(result_list) == 0:
+        return None
         
     return json.dumps(result_list)
 

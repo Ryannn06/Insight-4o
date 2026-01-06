@@ -83,8 +83,25 @@ show_navbar = true %} {% block content %}
                 const tableOptions = {
                     showRowNumber: true,
                     width: '100%',
-                    height: '100%',
-                    alternatingRowStyle: true
+                    height: '100%',            // Changed from 100% to auto for better pagination flow
+                    alternatingRowStyle: true,
+                    
+                    // --- PAGINATION UPDATES ---
+                    page: 'enable',            // Enables the next/prev buttons
+                    pageSize: 10,              // Number of rows per page
+                    pagingButtons: 'both',     // Shows both 'Next' and 'Prev' buttons
+                    
+                    // Optional styling to make it look cleaner
+                    cssClassNames: {
+                        headerRow: 'header-row',
+                        tableRow: 'table-row',
+                        oddTableRow: 'odd-table-row',
+                        selectedTableRow: 'selected-table-row',
+                        hoverTableRow: 'hover-table-row',
+                        headerCell: 'header-cell',
+                        tableCell: 'table-cell',
+                        rowNumberCell: 'row-number-cell'
+                    }
                 };
                 const chart = new google.visualization.Table(container);
                 chart.draw(dataTable, tableOptions);

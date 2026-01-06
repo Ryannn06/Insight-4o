@@ -7,6 +7,7 @@ from io import StringIO, BytesIO
 import time
 
 from app.crud import file_handler
+from app.utils.config import TEMP_DICT, RES_DICT, DURATION
 from app.crud.openai import intent_prompt, insight_prompt, system_prompt, generate_prompt, analyze_intent, analyze_insight, combine_results
 
 from pathlib import Path
@@ -21,8 +22,6 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="app/templates")
 
-ACTIVE_REPORT = {}
-
 def block_if_report(request : Request):
     user_state = request.session.get("user_state",{})
 
@@ -34,7 +33,7 @@ def block_if_report(request : Request):
             }
         )
 
-#dependencies=[Depends(block_if_report)]
+
 @router.get('/', response_class=HTMLResponse)
 def index(request : Request):   
     return templates.TemplateResponse(
@@ -64,15 +63,14 @@ async def upload_file(request : Request, file: UploadFile = File(...)):
 
     return RedirectResponse(url=f'/api/clean/{clean_id}', status_code=303)
 
+
 @router.get('/clean/{clean_id}')
 def clean(request : Request, clean_id : str):
     start = time.perf_counter()
-
     df = file_handler.load_file(clean_id)
 
     if df is None:
         return templates.TemplateResponse("index.html", {"request": request, "error": f"File not found."})
-
 
     try:
         sum([i**2 for i in range(1000000)])
@@ -83,11 +81,16 @@ def clean(request : Request, clean_id : str):
         if processed_df.shape[0] > 25000:
             return templates.TemplateResponse("index.html", 
                                               {"request": request, 
-                                               "error": f"Dataset is too large. Please upload a file with fewer than 10,000 rows."})
+                                               "error": f"The dataset is too large. Please upload a file with fewer than 25,000 rows."})
         
         # generate intent
         intent = generate_prompt(system_prompt(), intent_prompt(processed_df))
         intent_res = analyze_intent(processed_df, intent.choices[0].message.content)
+
+        if intent_res is None:
+            return templates.TemplateResponse("index.html", 
+                                              {"request": request, 
+                                               "error": f"Something went wrong while executing the analysis. Please try again."})
 
         # generate insight
         insight = generate_prompt(system_prompt(), insight_prompt(intent_res))
@@ -99,13 +102,33 @@ def clean(request : Request, clean_id : str):
         end = time.perf_counter()
         duration = end - start
 
+        # save to temporary dict
+        TEMP_DICT[clean_id] = processed_df
+        RES_DICT[clean_id] = combined_results
+        DURATION[clean_id] = duration
+
     except Exception as e:
-        return templates.TemplateResponse("index.html", {"request": request, "error": f"Something went wrong: {e}"})
+        print(e)
+        return templates.TemplateResponse("index.html", {"request": request, "error": f"Something went wrong while executing the analysis. Please try again."})
 
-    # set user session
-    response.set_cookie(key="report_session", value=clean_id, httponly=True)
+    # set user session state
+    #request.session["user_state"] = {"report_active": True,"report_id": clean_id}
 
-    ACTIVE_REPORT[clean_id] = {"status":"report generation", "start":time.time()}
+    return RedirectResponse(url=f'/api/report/{clean_id}', status_code=303)
+
+@router.get('/report/{clean_id}')
+def report(request : Request, clean_id : str):
+    processed_df = TEMP_DICT.get(clean_id)
+    combined_results = RES_DICT.get(clean_id)
+    duration = DURATION.get(clean_id)
+
+    if processed_df is None and combined_results is None and duration is None:
+        return templates.TemplateResponse("index.html",
+                                          {
+                                              "request":request,
+                                              "error":"File not found."
+                                           }
+                                        )
     
     return templates.TemplateResponse(
         "report.html",
@@ -116,10 +139,10 @@ def clean(request : Request, clean_id : str):
             "rows": processed_df.to_dict("records"),
             "openai_response": combined_results,
             "success":"Data is successfully analyzed.",
-            "runtime":round(duration,2),
-            "intent":intent_res
+            "runtime":round(duration,2)
         }
     )
+
 
 @router.get('/quit_report', response_class=HTMLResponse)
 async def quit_report(request : Request):
