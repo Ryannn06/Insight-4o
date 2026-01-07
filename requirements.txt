@@ -5,3 +5,4 @@ starlette==0.50.0
 uvicorn[standard]
 itsdangerous
 jinja2
+openai
