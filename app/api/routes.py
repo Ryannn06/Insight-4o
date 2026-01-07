@@ -36,7 +36,7 @@ def index(request : Request):
     # check if there is active session
     session_id = request.cookies.get("session_id")
     if session_id and session_id in TEMP_DICT:
-        return RedirectResponse(url=f'/api/report/{session_id}', status_code=303)
+        return RedirectResponse(url=f'/report/{session_id}', status_code=303)
     
     # otherwise
     error_slug = request.cookies.get("error_msg")
@@ -55,7 +55,7 @@ def index(request : Request):
 async def upload_file(request : Request, file: UploadFile = File(...)):
     # validate file type
     if not file_handler.validate_file(file.filename.lower()):
-        response = RedirectResponse(url='/api', status_code=303)
+        response = RedirectResponse(url='/', status_code=303)
         response.set_cookie(key="error_msg", value="invalid_format", max_age=5)
 
         return response
@@ -64,7 +64,7 @@ async def upload_file(request : Request, file: UploadFile = File(...)):
     try:
         clean_id = await file_handler.read_validate_file(file)
         if clean_id is None:
-            response = RedirectResponse(url='/api', status_code=303)
+            response = RedirectResponse(url='/', status_code=303)
             response.set_cookie(key="error_msg", value="invalid_dataset", max_age=5)
 
             return response
@@ -73,7 +73,7 @@ async def upload_file(request : Request, file: UploadFile = File(...)):
         return templates.TemplateResponse("index.html", {"request": request, "error": f"Failed to read file: {e}"})
     
     # Create the redirect object first
-    redirect = RedirectResponse(url=f'/api/clean/{clean_id}', status_code=303)
+    redirect = RedirectResponse(url=f'/clean/{clean_id}', status_code=303)
 
     # Set the cookie on the object
     redirect.set_cookie(key="session_id", value=clean_id, httponly=True)
@@ -89,7 +89,7 @@ def clean(request : Request, clean_id : str):
     # if cookie_id and clean_id do not match
     cookie_id = request.cookies.get("session_id")
     if cookie_id and cookie_id != clean_id:
-        response = RedirectResponse(url="/api", status_code=303)
+        response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="error_msg", value="forbidden", max_age=5)
 
         return response
@@ -97,7 +97,7 @@ def clean(request : Request, clean_id : str):
     # else proceed
     df = file_handler.load_file(clean_id)
     if df is None:
-        response = RedirectResponse(url="/api", status_code=303)
+        response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="error_msg", value="not_found", max_age=5)
 
         return response
@@ -117,7 +117,7 @@ def clean(request : Request, clean_id : str):
             RES_DICT.pop(clean_id, None)
             DURATION.pop(clean_id, None)
 
-            response = RedirectResponse(url='/api', status_code=303)
+            response = RedirectResponse(url='/', status_code=303)
             response.delete_cookie("session_id")
             
             response.set_cookie(key="error_msg", value="analysis_failed", max_age=5)
@@ -146,13 +146,13 @@ def clean(request : Request, clean_id : str):
         RES_DICT.pop(clean_id, None)
         DURATION.pop(clean_id, None)
 
-        response = RedirectResponse(url='/api', status_code=303)
+        response = RedirectResponse(url='/', status_code=303)
         response.delete_cookie("session_id")
         response.set_cookie(key="error_msg", value="analysis_failed", max_age=5)
         
         return response
 
-    return RedirectResponse(url=f'/api/report/{clean_id}', status_code=303)
+    return RedirectResponse(url=f'/report/{clean_id}', status_code=303)
 
 
 @router.get('/report/{clean_id}')
@@ -161,14 +161,14 @@ def report(request : Request, clean_id : str):
     
     # cookie does not exist
     if not cookie_id:
-        response = RedirectResponse(url='/api', status_code=303)
+        response = RedirectResponse(url='/', status_code=303)
         response.set_cookie(key="error_msg", value="not_found", max_age=5)
         
         return response
     
     # cookie and clean_id not match
     if cookie_id and cookie_id != clean_id:
-        response = RedirectResponse(url='/api', status_code=303)
+        response = RedirectResponse(url='/', status_code=303)
         response.set_cookie(key="error_msg", value="forbidden", max_age=5)
         
         return response
@@ -179,7 +179,7 @@ def report(request : Request, clean_id : str):
     duration = DURATION.get(clean_id)
 
     if processed_df is None or combined_results is None or duration is None:
-        response = RedirectResponse(url="/api", status_code=303)
+        response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="error_msg", value="not_found", max_age=5)
 
         return response
@@ -193,7 +193,8 @@ def report(request : Request, clean_id : str):
             "rows": processed_df.to_dict("records"),
             "openai_response": combined_results,
             "success":"Data is successfully analyzed.",
-            "runtime":round(duration,2)
+            "runtime":round(duration,2),
+            "is_active":True
         }
     )
 
@@ -206,9 +207,19 @@ async def quit_report(request : Request):
     RES_DICT.pop(cookie_id, None)
     DURATION.pop(cookie_id, None)
 
-    response = RedirectResponse(url='/api', status_code=303)
+    response = RedirectResponse(url='/', status_code=303)
     response.delete_cookie("session_id")
 
     return response
+
+@router.get('/about', response_class=HTMLResponse)
+def about(request : Request):
+    # check if there is active session
+    session_id = request.cookies.get("session_id")
+    if session_id and session_id in TEMP_DICT:
+        return RedirectResponse(url=f'/report/{session_id}', status_code=303)
+    
+    return templates.TemplateResponse("about.html", 
+                                      {"request":request})
 
     
