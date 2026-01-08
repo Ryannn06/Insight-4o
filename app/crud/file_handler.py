@@ -74,19 +74,21 @@ def micro_clean(df : pd.DataFrame) -> pd.DataFrame:
                 df[col] = numeric_col.round(2)
                 continue
 
-            # Try datetime conversion
-            datetime_col = pd.to_datetime(df[col], errors='coerce', infer_datetime_format=True)
-            if datetime_col.notna().mean() > 0.8:
-                df[col] = datetime_col
-                df[col+'_month'] = datetime_col.dt.month
-                df[col+'_month'] = datetime_col.dt.year
-            
             # If month name is provided but in object
             if df[col].str.title().isin(full_months + short_months).all():
                 month_col = to_month(df[col].str.strip().str.title())
                 df[col] = month_col
                 continue
 
+            # Try datetime conversion
+            datetime_col = pd.to_datetime(df[col], errors='coerce')
+            if datetime_col.notna().mean() > 0.8:
+                df[col+'_year'] = datetime_col.dt.year.fillna(0).astype(int)
+                df[col+'_month'] = datetime_col.dt.month.fillna(0).astype(int)
+                df[col+'_weekday'] = datetime_col.dt.weekday.fillna(0).astype(int)
+
+                df[col] = datetime_col
+            
             # Otherwise treat as string
             df[col] = df[col].apply(
                 lambda x: str(x).strip().title() if pd.notnull(x) else x
