@@ -28,7 +28,8 @@ ERROR_MESSAGES = {
     "invalid_format": "CSV or Excel files are the only formats allowed.",
     "session_expired": "Your session has expired. Please upload your file again.",
     "not_found": "Page not found (404).",
-    "forbidden":"You don’t have permission to access this (403)."
+    "forbidden":"You don’t have permission to access this (403).",
+    "failed_read":"Failed to read the file.async"
 }
 
 @router.get('/', response_class=HTMLResponse)
@@ -64,13 +65,16 @@ async def upload_file(request : Request, file: UploadFile = File(...)):
     try:
         clean_id = await file_handler.read_validate_file(file)
         if clean_id is None:
-            response = RedirectResponse(url='/', status_code=303)
+            response = RedirectResponse(url='/upload-form', status_code=303)
             response.set_cookie(key="error_msg", value="invalid_dataset", max_age=5)
 
             return response
         
     except Exception as e:
-        return templates.TemplateResponse("index.html", {"request": request, "error": f"Failed to read file: {e}"})
+        response = RedirectResponse(url='/upload-form', status_code=303)
+        response.set_cookie(key="error_msg", value="failed_read")
+
+        return response
     
     # Create the redirect object first
     redirect = RedirectResponse(url=f'/clean/{clean_id}', status_code=303)
@@ -222,4 +226,25 @@ def about(request : Request):
     return templates.TemplateResponse("about.html", 
                                       {"request":request})
 
+    
+
+@router.get('/upload-form')
+def upload_form(request: Request):
+    session_id = request.cookies.get("session_id")
+    if session_id and session_id in TEMP_DICT:
+        return RedirectResponse(url=f'/report/{session_id}', status_code=303)
+    
+    # otherwise
+    error_slug = request.cookies.get("error_msg")
+    display_text = ERROR_MESSAGES.get(error_slug)
+    
+    response = templates.TemplateResponse("upload.html", 
+                                          {
+                                            "request":request, 
+                                            "error":display_text
+                                           })
+    
+    if error_slug:
+        response.delete_cookie(key="error_msg")
+    return response
     
