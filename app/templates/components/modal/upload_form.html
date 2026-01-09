@@ -1,0 +1,26 @@
+<!-- Modal -->
+<div class="modal fade modal-md" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-dark" id="staticBackdropLabel">Upload a File</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <div class="card card-drop text-dark">
+                    <div class="drop_box">
+                        <header>
+                            <h4>Select a File here</h4>
+                        </header>
+                        <p class="form-label text-dark">Files Supported: CSV, XLSX</p>
+                        <input type="file" hidden accept=".csv,.xlsx" id="fileID" style="display:none;">
+                        <button class="btn btn-secondary">
+                            Choose a file <i class="bi bi-file-earmark-text"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

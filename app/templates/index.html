@@ -15,4 +15,45 @@
     </div>
 </div>
 
+{% block script %}
+<script>
+    const dropArea = document.querySelector(".drop_box"),
+        button = dropArea.querySelector("button"),
+        dragText = dropArea.querySelector("header"),
+        input = dropArea.querySelector("input");
+    let file;
+    var filename;
+
+    button.onclick = () => {
+        input.click();
+    };
+
+    input.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        var fileName = file.name;
+        let filedata = `
+                <form action="/upload/" method="post" enctype="multipart/form-data">
+                <div class="form">
+                <header>
+                    <p class="text-dark">Selected file:</p>
+                </header>
+                <h5 class="text-dark mb-3">${fileName}</h5>
+                <!-- keep the actual file input so it submits -->
+                <input type="file" name="file" hidden>
+                <button class="btn btn-secondary">Upload <i class="bi bi-file-earmark-arrow-up"></i></button>
+                </div>
+                </form>`;
+
+        dropArea.innerHTML = filedata;
+
+        // Append the selected file to the hidden input so it actually submits
+        const newInput = dropArea.querySelector("input[type=file]");
+        const dataTransfer = new DataTransfer(); // create a DataTransfer to hold the file
+        dataTransfer.items.add(file);
+        newInput.files = dataTransfer.files;
+    });
+
+</script>
+{% endblock %}
 {% endblock %}

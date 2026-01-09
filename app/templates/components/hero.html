@@ -7,13 +7,15 @@
                 actionable insights in seconds.
             </p>
             <div class="d-flex gap-3">
-                <a href="/upload-form" class="btn btn-primary">
+                <a class="btn btn-primary" href="#" "modal" data-bs-target="#staticBackdrop" data-bs-toggle="modal">
                     Try it now <i class="bi bi-chevron-double-right"></i>
                 </a>
+                
                 <button class="btn btn-secondary">
                     Contacts <i class="bi bi-chevron-double-right"></i>
                 </button>
-            </div>  
+            </div> 
+            {% include "components/modal/upload_form.html" %}
         </div>
     </div>
 </div>

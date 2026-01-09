@@ -23,6 +23,10 @@ h1 {
     color: #FFFFFF;
 }
 
+.text-dark {
+    color: #0A0A0A !important;
+}
+
 .text-muted {
     color: #D6D6D6 !important;
 }
@@ -103,73 +107,8 @@ h1 {
     /* Slide in to cover the button */
 }
 
-
-.upload-dropzone {
-    background: #121212;
-    border: 2px dashed #2F2F2F;
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    color: #D6D6D6;
-    cursor: pointer;
-    transition: border 0.3s, background 0.3s;
-}
-
-.upload-dropzone:hover {
-    border-color: #FFFFFF;
-    background: #181818;
-}
-
-.upload-dropzone.dragover {
-    border-color: #FFFFFF;
-    background: #1C1C1C;
-}
-
-.browse-text {
-    color: #FFFFFF;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.file-list {
-    list-style: none;
-    margin-top: 20px;
-    padding-left: 0;
-    color: #D6D6D6;
-}
-
-.file-list li {
-    padding: 8px 12px;
-    border-bottom: 1px solid #2F2F2F;
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-}
-
-.file-list li span {
-    color: #B3B3B3;
-}
-
 .dataTables_wrapper table  {
     font-size: 3rem !important;
-}
-
-.index-block {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.bg-custom-dark{
-    background-color:  #212121 !important;
-}
-
-.text-dark {
-    color:  #6F42C1 !important;
-}
-
-.bg-violet {
-    background-color: #6F42C1 !important;
 }
 
 
@@ -198,11 +137,11 @@ h1 {
 
 
 .violet-input {
-    border: 1px solid #6F42C1;
+    border: 1px solid #0A0A0A;
 }
 
 .violet-input:focus {
-    border-color: #6F42C1;
+    border-color: #0A0A0A;
     box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
 }
 
